@@ -20,15 +20,40 @@ namespace tabuleiro
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < Linhas; i++)
             {
+                sb.Append((8-i)+" ");
                 for (int j = 0; j < Colunas; j++)
                 {
                     sb.Append((pecas[i, j]?.ToString() ?? "-") + " ");
                 }
                 sb.AppendLine("");
             }
-
+            sb.Append("  ");
+            for (int j = 0; j < Colunas; j++)
+                sb.Append((char)('a'+j)+" ");
+            sb.AppendLine("");
 
             return sb.ToString();
+        }
+
+        public void Imprimir()
+        {
+            for (int i = 0; i < Linhas; i++)
+            {
+                System.Console.Write((8 - i) + " ");
+                for (int j = 0; j < Colunas; j++)
+                {
+                    if (pecas[i, j] != null)
+                        pecas[i, j].imprimirPeca();
+                    else
+                        System.Console.Write("- ");
+                }
+                System.Console.WriteLine("");
+            }
+            System.Console.WriteLine("  ");
+            for (int j = 0; j < Colunas; j++)
+                System.Console.Write((char)('a' + j) + " ");
+            System.Console.WriteLine("");
+
         }
 
         public Peca Peca(int linha, int coluna)

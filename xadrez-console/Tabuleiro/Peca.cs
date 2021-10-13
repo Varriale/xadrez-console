@@ -1,4 +1,6 @@
-﻿namespace tabuleiro
+﻿using System;
+
+namespace tabuleiro
 {
     class Peca
     {
@@ -20,6 +22,20 @@
         public override string ToString()
         {
             return "G";
+        }
+        public void imprimirPeca()
+        {
+            if (Cor == Cor.Branca)
+            {
+                System.Console.Write(this+" ");
+            }
+            else
+            {
+                ConsoleColor aux = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                System.Console.Write(this+" ");
+                Console.ForegroundColor = aux;
+            }
         }
 
     }
