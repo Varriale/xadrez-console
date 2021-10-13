@@ -37,6 +37,10 @@ namespace tabuleiro
                 Console.ForegroundColor = aux;
             }
         }
+        public void IncrementarQteMovimentos()
+        {
+            qteMovimentos++;
+        }
 
     }
 }

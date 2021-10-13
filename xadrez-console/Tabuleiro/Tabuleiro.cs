@@ -49,7 +49,7 @@ namespace tabuleiro
                 }
                 System.Console.WriteLine("");
             }
-            System.Console.WriteLine("  ");
+            System.Console.Write("  ");
             for (int j = 0; j < Colunas; j++)
                 System.Console.Write((char)('a' + j) + " ");
             System.Console.WriteLine("");
@@ -73,6 +73,20 @@ namespace tabuleiro
             pecas[pos.Linha, pos.Coluna] = P;
             P.Posicao = pos;
         }
+        public Peca RetirarPeca(Posicao pos)
+        {
+            if (existePeca(pos))
+            {
+                Peca aux = Peca(pos);
+                pecas[pos.Linha, pos.Coluna] = null;
+                aux.Posicao = null;
+                return aux;
+            }
+            else
+            {
+                return null;
+            }
+        }           
 
         public bool posicaoValida(Posicao pos)
         {
