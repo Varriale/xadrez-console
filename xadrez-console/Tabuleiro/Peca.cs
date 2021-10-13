@@ -16,5 +16,11 @@
             this.qteMovimentos = 0;
             Tabuleiro = tabuleiro;
         }
+
+        public override string ToString()
+        {
+            return "P";
+        }
+
     }
 }
