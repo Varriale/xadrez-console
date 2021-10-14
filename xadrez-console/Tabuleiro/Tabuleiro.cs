@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace tabuleiro
 {
@@ -35,17 +36,25 @@ namespace tabuleiro
             return sb.ToString();
         }
 
-        public void Imprimir()
+        public void Imprimir(bool[,] posicoesPossiveis=null)
         {
+            ConsoleColor fundoOriginal = Console.BackgroundColor;
+            ConsoleColor fundoAlterado = ConsoleColor.DarkGray;
             for (int i = 0; i < Linhas; i++)
             {
                 System.Console.Write((8 - i) + " ");
                 for (int j = 0; j < Colunas; j++)
                 {
+                    if (posicoesPossiveis?[i, j] ?? false)
+                    {
+                        Console.BackgroundColor = fundoAlterado;
+                    }
                     if (pecas[i, j] != null)
                         pecas[i, j].imprimirPeca();
                     else
                         System.Console.Write("- ");
+
+                    Console.BackgroundColor = fundoOriginal;
                 }
                 System.Console.WriteLine("");
             }
