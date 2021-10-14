@@ -17,10 +17,7 @@ namespace xadrez_console
                     try
                     {
                         Console.Clear();
-                        partida.tab.Imprimir();
-                        Console.WriteLine();
-                        Console.WriteLine("Turno: " + partida.turno);
-                        Console.WriteLine("Vez do jogador com peça " + partida.jogadorAtual);
+                        partida.Imprimir();
 
                         Console.WriteLine();
                         Console.WriteLine("Origem:");
@@ -30,12 +27,13 @@ namespace xadrez_console
 
                         Console.Clear();
                         bool[,] movPoss = partida.tab.Peca(origem).MovimentosPossiveis();
-                        partida.tab.Imprimir(movPoss);
+                        partida.Imprimir(movPoss);
 
 
                         Console.WriteLine();
                         Console.WriteLine("Destino:");
                         Posicao destino = lerPosicaoXadrez().toPosicao();
+                        partida.validarPosicaoDeDestino(origem,destino);
                         partida.realizaJogada(origem, destino);
                     }
                     catch (TabuleiroException e)
