@@ -71,6 +71,7 @@ namespace tabuleiro
         }
         public Peca Peca(Posicao pos)
         {
+            validarPosicao(pos);
             return pecas[pos.Linha, pos.Coluna];
         }
 

@@ -14,20 +14,40 @@ namespace xadrez_console
 
                 while (!partida.terminada)
                 {
-                    Console.Clear();
-                    partida.tab.Imprimir();
-                    Console.WriteLine();
-                    Console.WriteLine("Origem:");
-                    Posicao origem = lerPosicaoXadrez().toPosicao();
-                    Console.Clear();
-                    bool[,] movPoss = partida.tab.Peca(origem).MovimentosPossiveis();
-                    partida.tab.Imprimir(movPoss);
+                    try
+                    {
+                        Console.Clear();
+                        partida.tab.Imprimir();
+                        Console.WriteLine();
+                        Console.WriteLine("Turno: " + partida.turno);
+                        Console.WriteLine("Vez do jogador com peça " + partida.jogadorAtual);
+
+                        Console.WriteLine();
+                        Console.WriteLine("Origem:");
+                        Posicao origem = lerPosicaoXadrez().toPosicao();
+                        partida.validarPosicaoDeOrigem(origem);
 
 
-                    Console.WriteLine();
-                    Console.WriteLine("Destino:");
-                    Posicao destino = lerPosicaoXadrez().toPosicao();
-                    partida.executarMovimento(origem, destino);
+                        Console.Clear();
+                        bool[,] movPoss = partida.tab.Peca(origem).MovimentosPossiveis();
+                        partida.tab.Imprimir(movPoss);
+
+
+                        Console.WriteLine();
+                        Console.WriteLine("Destino:");
+                        Posicao destino = lerPosicaoXadrez().toPosicao();
+                        partida.realizaJogada(origem, destino);
+                    }
+                    catch (TabuleiroException e)
+                    {
+                        Console.WriteLine(e.Message); ;
+                        Console.ReadLine();
+                    }
+                    catch (FormatException e)
+                    {
+                        Console.WriteLine("Escreva uma posição válida no formato 'a1'");
+                        Console.ReadLine();
+                    }
                 }
 
 
@@ -37,12 +57,13 @@ namespace xadrez_console
             {
                 Console.WriteLine(e.Message);
             }
+
         }
 
         public static PosicaoXadrez lerPosicaoXadrez()
         {
             string s = Console.ReadLine();
-            return new PosicaoXadrez(s[0], int.Parse(s[1]+""));
+            return new PosicaoXadrez(s[0], int.Parse(s[1] + ""));
         }
 
     }

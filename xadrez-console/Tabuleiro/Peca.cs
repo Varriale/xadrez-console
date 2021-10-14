@@ -11,7 +11,7 @@ namespace tabuleiro
 
         public Tabuleiro Tab { get; set; }
 
-        public Peca( Cor cor, Tabuleiro tabuleiro)
+        public Peca(Cor cor, Tabuleiro tabuleiro)
         {
             Posicao = null;
             Cor = cor;
@@ -32,13 +32,13 @@ namespace tabuleiro
         {
             if (Cor == Cor.Branca)
             {
-                System.Console.Write(this+" ");
+                System.Console.Write(this + " ");
             }
             else
             {
                 ConsoleColor aux = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                System.Console.Write(this+" ");
+                System.Console.Write(this + " ");
                 Console.ForegroundColor = aux;
             }
         }
@@ -46,7 +46,17 @@ namespace tabuleiro
         {
             qteMovimentos++;
         }
-        public abstract bool[,] MovimentosPossiveis();
 
+        public bool existeMovimentosPossiveis()
+        {
+            bool[,] mat = MovimentosPossiveis();
+            for (int i = 0; i < Tab.Linhas; i++)
+                for (int j = 0; j < Tab.Colunas; j++)
+                    if (mat[i, j])
+                        return true;
+            return false;
+        }
+
+        public abstract bool[,] MovimentosPossiveis();
     }
 }
