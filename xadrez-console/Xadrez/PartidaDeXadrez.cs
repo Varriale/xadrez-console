@@ -50,7 +50,7 @@ namespace xadrez
         public Peca executarMovimento(Posicao origem, Posicao destino)
         {
             Peca p = tab.RetirarPeca(origem);
-            Peca pecaCapturada=null;
+            Peca pecaCapturada = null;
             if (p != null)
             {
                 p.IncrementarQteMovimentos();
@@ -95,12 +95,18 @@ namespace xadrez
             }
 
             xeque = estaEmXeque(adversaria(jogadorAtual));
-
-            turno++;
-            mudaJogador();
+            if (testeXequemate(adversaria(jogadorAtual)))
+            {
+                terminada = true;
+            }
+            else
+            {
+                turno++;
+                mudaJogador();
+            }
         }
 
-        public void desfazMovimento(Posicao origem, Posicao destino,Peca capturada)
+        public void desfazMovimento(Posicao origem, Posicao destino, Peca capturada)
         {
             executarMovimento(destino, origem);
             if (capturada != null)
@@ -133,15 +139,29 @@ namespace xadrez
 
         public void Imprimir(bool[,] posicoesPossiveis = null)
         {
-            tab.Imprimir(posicoesPossiveis);
-            Console.WriteLine();
-            ImprimirPecasCapturadas();
-            Console.WriteLine();
-            Console.WriteLine("Turno: " + turno);
-            Console.WriteLine("Vez do jogador com peça " + jogadorAtual);
-            if (xeque)
+            if (!terminada)
             {
-                Console.WriteLine("Xeque");
+                tab.Imprimir(posicoesPossiveis);
+                Console.WriteLine();
+                ImprimirPecasCapturadas();
+                Console.WriteLine();
+                Console.WriteLine("Turno: " + turno);
+                Console.WriteLine("Vez do jogador com peça " + jogadorAtual);
+                if (xeque)
+                {
+                    Console.WriteLine("XEQUE!");
+                }
+            }
+            else
+            {
+                tab.Imprimir(posicoesPossiveis);
+                Console.WriteLine();
+                ImprimirPecasCapturadas();
+                Console.WriteLine();
+                Console.WriteLine("Turno: " + turno);
+                Console.WriteLine("XEQUEMATE!!\nVencedor: "+jogadorAtual);
+                Console.WriteLine();
+                Console.WriteLine("fim do jogo");
             }
         }
 
@@ -158,8 +178,8 @@ namespace xadrez
             Peca R = rei(cor);
             if (R == null)
                 throw new TabuleiroException("Rei da cor " + cor + " não existe!");
-            
-            foreach(Peca peca in pecasEmJogo(adversaria(cor)))
+
+            foreach (Peca peca in pecasEmJogo(adversaria(cor)))
             {
                 if (peca.MovimentosPossiveis()[R.Posicao.Linha, R.Posicao.Coluna])
                     return true;
@@ -167,9 +187,37 @@ namespace xadrez
             return false;
         }
 
+        public bool testeXequemate(Cor cor)
+        {
+            if (!estaEmXeque(cor))
+                return false;
+
+            foreach (Peca peca in pecasEmJogo(cor))
+            {
+
+                bool[,] mat = peca.MovimentosPossiveis();
+                Posicao posOrig = peca.Posicao;
+                for (int i = 0; i < tab.Linhas; i++)
+                    for (int j = 0; j < tab.Colunas; j++)
+                        if (mat[i, j])
+                        {
+                            Posicao pos = new Posicao(i, j);
+                            Peca capturada = executarMovimento(posOrig, pos);
+
+                            if (!estaEmXeque(cor))
+                            {
+                                desfazMovimento(posOrig, pos, capturada);
+                                return false;
+                            }
+                            desfazMovimento(posOrig, pos, capturada);
+                        }
+            }
+            return true;
+        }
+
         private Peca rei(Cor cor)
         {
-            foreach(Peca peca in pecasEmJogo(cor))
+            foreach (Peca peca in pecasEmJogo(cor))
             {
                 if (peca is Rei)
                     return peca;
