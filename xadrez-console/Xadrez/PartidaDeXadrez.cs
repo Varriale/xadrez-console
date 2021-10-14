@@ -45,6 +45,12 @@ namespace xadrez
             colocarNovaPeca('c', 7, new Torre(Cor.Preta, tab));
             colocarNovaPeca('d', 7, new Torre(Cor.Preta, tab));
             colocarNovaPeca('e', 7, new Torre(Cor.Preta, tab));
+
+            colocarNovaPeca('d', 4, new Bispo(Cor.Branca, tab));
+            colocarNovaPeca('e', 4, new Cavalo(Cor.Branca, tab));
+            colocarNovaPeca('c', 4, new Dama(Cor.Branca, tab));
+            colocarNovaPeca('f', 7, new Peao(Cor.Branca, tab));
+            colocarNovaPeca('d', 6, new Peao(Cor.Branca, tab));
         }
 
         public Peca executarMovimento(Posicao origem, Posicao destino)
@@ -118,6 +124,7 @@ namespace xadrez
 
         public void validarPosicaoDeOrigem(Posicao pos)
         {
+            tab.validarPosicao(pos);
             if (tab.Peca(pos) == null)
                 throw new TabuleiroException("Não existe peça na posição de origem escolhida!");
             if (tab.Peca(pos).Cor != jogadorAtual)
@@ -128,7 +135,8 @@ namespace xadrez
         }
         public void validarPosicaoDeDestino(Posicao origem, Posicao destino)
         {
-            if (!tab.Peca(origem).podeMoverPara(destino))
+            tab.validarPosicao(destino);
+            if (!tab.Peca(origem).movimentoPossivel(destino))
                 throw new TabuleiroException("A jogada não é válida!");
 
         }

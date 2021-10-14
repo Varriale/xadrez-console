@@ -67,12 +67,15 @@ namespace tabuleiro
 
         public Peca Peca(int linha, int coluna)
         {
-            return pecas[linha, coluna];
+            if(posicaoValida(new Posicao(linha,coluna)))
+                return pecas[linha, coluna];
+            return null;
         }
         public Peca Peca(Posicao pos)
         {
-            validarPosicao(pos);
-            return pecas[pos.Linha, pos.Coluna];
+            if (posicaoValida(pos))
+                return pecas[pos.Linha, pos.Coluna];
+            return null;
         }
 
         public void ColocarPeca(Peca P, Posicao pos)

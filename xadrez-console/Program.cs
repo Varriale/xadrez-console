@@ -41,7 +41,7 @@ namespace xadrez_console
                         Console.WriteLine(e.Message); ;
                         Console.ReadLine();
                     }
-                    catch (FormatException e)
+                    catch (Exception e)
                     {
                         Console.WriteLine("Escreva uma posição válida no formato 'a1'");
                         Console.ReadLine();
@@ -49,8 +49,7 @@ namespace xadrez_console
                 }
                 Console.Clear();
                 partida.Imprimir();
-
-
+                Console.ReadLine();
             }
             catch (TabuleiroException e)
             {
