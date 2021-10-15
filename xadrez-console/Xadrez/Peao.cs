@@ -4,8 +4,10 @@ namespace xadrez
 {
     class Peao : Peca
     {
-        public Peao(Cor cor, Tabuleiro tabuleiro) : base(cor, tabuleiro)
+        private PartidaDeXadrez partida;
+        public Peao(Cor cor, Tabuleiro tabuleiro,PartidaDeXadrez partida) : base(cor, tabuleiro)
         {
+            this.partida = partida;
         }
 
         public override bool[,] MovimentosPossiveis()
@@ -37,8 +39,13 @@ namespace xadrez
                 if(peca!=null)
                     if (Tab.posicaoValida(pos) && podeMover(pos)&&peca.Cor!=Cor)
                         mat[pos.Linha, pos.Coluna] = true;
-            }
 
+                //#jogadaEspecial En Passant
+                pos.definePosicao(Posicao.Linha, Posicao.Coluna + j);
+                peca = Tab.Peca(pos);
+                if (peca != null&&peca==partida.vulneravelEnPassant)
+                    mat[pos.Linha+direcao, pos.Coluna] = true;
+            }
 
             return mat;
         }

@@ -10,6 +10,8 @@ namespace xadrez
         public int turno { get; private set; }
         public Cor jogadorAtual { get; private set; }
         public bool terminada { get; private set; }
+        public Peca vulneravelEnPassant { get; private set; }
+        private bool enPassant;
         private HashSet<Peca> pecas;
         private HashSet<Peca> capturadas;
         public bool xeque { get; set; }
@@ -23,6 +25,8 @@ namespace xadrez
             xeque = false;
             pecas = new HashSet<Peca>();
             capturadas = new HashSet<Peca>();
+            vulneravelEnPassant = null;
+            enPassant = false;
             colocarPecas();
         }
         public void colocarNovaPeca(char coluna, int linha, Peca peca)
@@ -48,9 +52,10 @@ namespace xadrez
 
             colocarNovaPeca('d', 4, new Bispo(Cor.Branca, tab));
             colocarNovaPeca('e', 4, new Cavalo(Cor.Branca, tab));
-            colocarNovaPeca('c', 4, new Dama(Cor.Branca, tab));
-            colocarNovaPeca('f', 7, new Peao(Cor.Branca, tab));
-            colocarNovaPeca('d', 6, new Peao(Cor.Branca, tab));*/
+            colocarNovaPeca('c', 4, new Dama(Cor.Branca, tab));*/
+            colocarNovaPeca('e', 4, new Peao(Cor.Preta, tab,this));
+            colocarNovaPeca('d', 2, new Peao(Cor.Branca, tab, this));
+            colocarNovaPeca('f', 1, new Peao(Cor.Branca, tab, this));
             xeque = estaEmXeque(adversaria(jogadorAtual))|| estaEmXeque(jogadorAtual);
         }
 
@@ -58,13 +63,12 @@ namespace xadrez
         {
             Peca p = tab.RetirarPeca(origem);
             Peca pecaCapturada = null;
+            enPassant = false;
             if (p != null)
             {
                 p.IncrementarQteMovimentos();
                 pecaCapturada = tab.RetirarPeca(destino);
                 tab.ColocarPeca(p, destino);
-                if (pecaCapturada != null)
-                    capturadas.Add(pecaCapturada);
 
                 //#jogadaEspecial roque
                 if(p is Rei)
@@ -87,6 +91,19 @@ namespace xadrez
                     }
                 }
 
+                //#jogadaEspecial En Passant
+                if(p is Peao)
+                {
+                    if (origem.Coluna != destino.Coluna && pecaCapturada == null)
+                    {
+                        pecaCapturada = tab.RetirarPeca(vulneravelEnPassant.Posicao);
+                        enPassant = true;
+                    }
+                }
+
+
+                if (pecaCapturada != null)
+                    capturadas.Add(pecaCapturada);
             }
             return pecaCapturada;
         }
@@ -131,6 +148,11 @@ namespace xadrez
                 turno++;
                 mudaJogador();
             }
+            Peca p = tab.Peca(destino);
+            if(p is Peao && Math.Abs(destino.Linha - origem.Linha) == 2)
+                vulneravelEnPassant = p;
+            else
+                vulneravelEnPassant = null;
         }
 
         public void desfazMovimento(Posicao origem, Posicao destino, Peca capturada)
@@ -139,7 +161,14 @@ namespace xadrez
             p.decrementarQteMovimentos();
             if (capturada != null)
             {
-                tab.ColocarPeca(capturada, destino);
+                //#jogadaEspecial En Passant
+                if (enPassant)
+                {
+                    Posicao posPass = new Posicao(origem.Linha, destino.Coluna);
+                    tab.ColocarPeca(capturada, posPass);
+                }
+                else
+                    tab.ColocarPeca(capturada, destino);
                 capturadas.Remove(capturada);
             }
             tab.ColocarPeca(p, origem);
